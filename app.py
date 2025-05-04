@@ -11,6 +11,7 @@ import google.generativeai as genai
 from config import GEMINI_API_KEY
 from db import init_db, save_message, get_history, delete_history
 import requests 
+import os
 
 # 初始化資料庫
 init_db()
@@ -182,4 +183,6 @@ def handle_location(event):
     )
 
 if __name__ == "__main__":
-    app.run()
+    init_db()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
