@@ -74,7 +74,7 @@ def handle_text(event):
     
     if user_msg == "清除紀錄":
         try:
-            delete_url = f"http://localhost:5000/history/{user_id}"
+            delete_url = f"https://line-gemini-bot-kgd6.onrender.com/history/{user_id}"
             res = requests.delete(delete_url)
 
             if res.status_code == 200:
