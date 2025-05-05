@@ -31,7 +31,7 @@ import yfinance as yf
 def get_stock_price(symbol):
     try:
         stock = yf.Ticker(symbol)
-        info = stock.info
+        info = stock.fast_info
         name = info.get("shortName", "未知公司")
         price = info.get("regularMarketPrice", "無資料")
         currency = info.get("currency", "")
