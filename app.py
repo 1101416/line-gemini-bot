@@ -102,7 +102,9 @@ def handle_text(event):
                 reply_lines = []
                 for row in history[-5:]:
                     user_msg, bot_reply, timestamp = row
-                    reply_lines.append(f" {timestamp}\n {user_msg}\n {bot_reply}")
+                    taiwan_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+                    time_str = taiwan_time.strftime("%Y-%m-%d %H:%M:%S")
+                    reply_lines.append(f"{time_str}\n{user_msg}\n{bot_reply}")
                 reply_text = "最近的對話紀錄：\n\n" + "\n\n".join(reply_lines)
         except Exception as e:
             reply_text = f"查詢失敗：{str(e)}"
