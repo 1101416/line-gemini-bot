@@ -137,7 +137,7 @@ def handle_text(event):
                 city = parts[-1]
                 reply_text = get_weather(city)
             else:
-                reply_text = "請輸入城市名稱，例如：查天氣 台北"
+                reply_text = "請輸入城市名稱(用英文)，例如：查天氣 Taipei"
         except Exception as e:
             reply_text = f"查詢失敗：{e}"
 
