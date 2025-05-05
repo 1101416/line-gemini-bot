@@ -13,6 +13,8 @@ from db import init_db, save_message, get_history, delete_history
 import requests 
 import os
 from datetime import datetime, timedelta
+from config import OPENWEATHER_API_KEY
+
 # 初始化資料庫
 init_db()
 
@@ -26,17 +28,26 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(config.LINE_CHANNEL_SECRET)
 
-import yfinance as yf
 
-def get_stock_price(symbol):
+def get_weather(city):
     try:
-        stock = yf.Ticker(symbol)
-        name = stock.info.get("shortName", symbol)
-        price = stock.fast_info.get("last_price", "無資料")
-        currency = stock.fast_info.get("currency", "TWD")
-        return f"{name} ({symbol})\n最新股價：{price} {currency}"
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_API_KEY}&units=metric&lang=zh_tw"
+        res = requests.get(url)
+        if res.status_code != 200:
+            return f"查詢失敗，請確認城市名稱（錯誤碼 {res.status_code}）"
+        
+        data = res.json()
+        name = data["name"]
+        weather = data["weather"][0]["description"]
+        temp = data["main"]["temp"]
+        feels_like = data["main"]["feels_like"]
+        humidity = data["main"]["humidity"]
+
+        return f"🌤 {name} 的天氣：\n狀況：{weather}\n氣溫：{temp}°C\n體感：{feels_like}°C\n濕度：{humidity}%"
+    
     except Exception as e:
-        return f"查詢失敗：{e}"
+        return f"查詢天氣發生錯誤：{str(e)}"
+
 
 from flask import jsonify
 
@@ -118,17 +129,18 @@ def handle_text(event):
     if user_msg == "我的ID":
         reply_text = f"你的使用者 ID 是：\n{user_id}"
     
-    # 股票查詢邏輯
-    elif "查股票" in user_msg or "股價" in user_msg:
+    # 天氣查詢
+    elif "天氣" in user_msg or "查天氣" in user_msg:
         try:
             parts = user_msg.split()
             if len(parts) >= 2:
-                symbol = parts[-1].upper()
-                reply_text = get_stock_price(symbol)
+                city = parts[-1]
+                reply_text = get_weather(city)
             else:
-                reply_text = "請輸入股票代號(台股要加.TW/美股)，例如：查股票 2330.TW 或 查股票 AAPL"
+                reply_text = "請輸入城市名稱，例如：查天氣 台北"
         except Exception as e:
-            reply_text = f"查詢錯誤：{e}"
+            reply_text = f"查詢失敗：{e}"
+
 
     # Gemini AI 生成文字
     else:
