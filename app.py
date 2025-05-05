@@ -12,7 +12,7 @@ from config import GEMINI_API_KEY
 from db import init_db, save_message, get_history, delete_history
 import requests 
 import os
-
+from datetime import datetime, timedelta
 # 初始化資料庫
 init_db()
 
