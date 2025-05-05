@@ -84,7 +84,7 @@ def handle_text(event):
         except Exception as e:
             reply_text = f"發生錯誤：{str(e)}"
             
-        # ⚠️ 直接回傳，不進入其他邏輯
+        #  直接回傳，不進入其他邏輯
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply_text)
@@ -125,7 +125,7 @@ def handle_text(event):
                 symbol = parts[-1].upper()
                 reply_text = get_stock_price(symbol)
             else:
-                reply_text = "請輸入股票代號，例如：查股票 2330 或 查股票 AAPL"
+                reply_text = "請輸入股票代號(台股要加.TW/美股)，例如：查股票 2330.TW 或 查股票 AAPL"
         except Exception as e:
             reply_text = f"查詢錯誤：{e}"
 
