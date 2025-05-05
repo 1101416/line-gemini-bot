@@ -31,10 +31,9 @@ import yfinance as yf
 def get_stock_price(symbol):
     try:
         stock = yf.Ticker(symbol)
-        info = stock.fast_info
-        name = info.get("shortName", "未知公司")
-        price = info.get("regularMarketPrice", "無資料")
-        currency = info.get("currency", "")
+        name = stock.info.get("shortName", symbol)
+        price = stock.fast_info.get("last_price", "無資料")
+        currency = stock.fast_info.get("currency", "TWD")
         return f"{name} ({symbol})\n最新股價：{price} {currency}"
     except Exception as e:
         return f"查詢失敗：{e}"
